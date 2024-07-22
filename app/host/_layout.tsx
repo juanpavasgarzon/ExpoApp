@@ -12,6 +12,9 @@ const styles = StyleSheet.create({
     headerContainer: {
         paddingHorizontal: 10,
         marginBottom: 5
+    },
+    spacing: {
+        marginBottom: 5
     }
 })
 
@@ -44,6 +47,8 @@ export default function HostLayout() {
                     drawerActiveTintColor: theme.colors.tint,
                     headerRightContainerStyle: styles.headerContainer,
                     headerLeftContainerStyle: styles.headerContainer,
+                    headerTitleStyle: styles.spacing,
+                    headerTitleAlign: "left",
                     headerLeft: renderHeaderLeft,
                     headerRight: renderHeaderRight,
                 }}>
