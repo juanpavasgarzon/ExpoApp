@@ -1,27 +1,46 @@
 import type { PropsWithChildren, ReactElement } from 'react';
-import { StyleSheet, useColorScheme } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedRef,
   useAnimatedStyle,
   useScrollViewOffset,
 } from 'react-native-reanimated';
-
 import { ThemedView } from '@/components/ThemedView';
+import { useThemeColor } from '@/hooks/useThemeColor';
 
-const HEADER_HEIGHT = 250;
+const screen = Dimensions.get("screen");
+const HEADER_HEIGHT = screen.height * 0.20;
 
-type Props = PropsWithChildren<{
+type ParallaxScrollViewProps = PropsWithChildren<{
   headerImage: ReactElement;
-  headerBackgroundColor: { dark: string; light: string };
+  lightColor?: string;
+  darkColor?: string;
 }>;
 
-export default function ParallaxScrollView({
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    height: 250,
+    overflow: 'hidden',
+  },
+  content: {
+    flex: 1,
+    padding: 20,
+    gap: 16,
+    overflow: 'hidden',
+  },
+});
+
+export function ParallaxScrollView({
   children,
   headerImage,
-  headerBackgroundColor,
-}: Props) {
-  const colorScheme = useColorScheme() ?? 'light';
+  lightColor,
+  darkColor
+}: ParallaxScrollViewProps) {
+  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'contrast');
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
 
@@ -36,7 +55,11 @@ export default function ParallaxScrollView({
           ),
         },
         {
-          scale: interpolate(scrollOffset.value, [-HEADER_HEIGHT, 0, HEADER_HEIGHT], [2, 1, 1]),
+          scale: interpolate(
+            scrollOffset.value,
+            [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
+            [2, 1, 1]
+          ),
         },
       ],
     };
@@ -48,7 +71,7 @@ export default function ParallaxScrollView({
         <Animated.View
           style={[
             styles.header,
-            { backgroundColor: headerBackgroundColor[colorScheme] },
+            { backgroundColor: backgroundColor },
             headerAnimatedStyle,
           ]}>
           {headerImage}
@@ -58,19 +81,3 @@ export default function ParallaxScrollView({
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    height: 250,
-    overflow: 'hidden',
-  },
-  content: {
-    flex: 1,
-    padding: 32,
-    gap: 16,
-    overflow: 'hidden',
-  },
-});
