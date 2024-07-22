@@ -3,6 +3,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { Checkbox, type CheckboxProps } from 'expo-checkbox';
 import { ThemedView } from './ThemedView';
 import { ThemedText } from './ThemedText';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 type ThemedCheckboxProps = CheckboxProps & {
     rootStyle?: StyleProp<ViewStyle>
@@ -22,12 +23,12 @@ const styles = StyleSheet.create({
     }
 });
 
-export function ThemedCheckbox({ rootStyle, style,  placeholder, lightColor, darkColor, ...rest }: ThemedCheckboxProps) {
+export function ThemedCheckbox({ rootStyle, style, onValueChange, value, placeholder, lightColor, darkColor, ...rest }: ThemedCheckboxProps) {
     const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'tint');
 
     return (
         <ThemedView style={[rootStyle, styles.check]}>
-            <Checkbox color={backgroundColor} {...rest} />
+            <Checkbox color={backgroundColor} value={value} onValueChange={onValueChange} {...rest} />
             <ThemedText type="default" style={styles.placeholder}>{placeholder}</ThemedText>
         </ThemedView>
     );

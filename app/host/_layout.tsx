@@ -1,34 +1,52 @@
 import { TabBarIcon } from "@/components/TabBarIcon";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from 'expo-router/drawer';
-import { Colors } from "@/constants/Colors";
-import { ThemedTouchableOpacity } from "@/components/TouchableOpacity";
-import { StyleSheet, useColorScheme } from "react-native";
 import React from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { ParamListBase } from "@react-navigation/native";
-import { router, useNavigation } from "expo-router";
-import { DrawerScreenProps } from "@react-navigation/drawer";
 import { HeaderAction } from "@/components/HeaderAction";
+import { useTheme } from "@/hooks/useTheme";
+import { StyleSheet } from "react-native";
+import { useNavigation, useRouter } from "expo-router";
+import { DrawerActions } from "@react-navigation/native";
 
+const styles = StyleSheet.create({
+    headerContainer: {
+        paddingHorizontal: 10,
+        marginBottom: 5
+    }
+})
 
 export default function HostLayout() {
-    const colorScheme = useColorScheme();
+    const theme = useTheme();
+    const navigation = useNavigation();
+    const router = useRouter();
 
-    const tintColor = Colors[colorScheme ?? 'light'].tint;
-    const contrastColor = Colors[colorScheme ?? 'light'].contrast;
+    const handleOpenDrawer = () => {
+        navigation.dispatch(DrawerActions.openDrawer)
+    }
+
+    const handleProfileNavigate = () => {
+        router.navigate("/host/profile")
+    }
+
+    const renderHeaderLeft = () => (
+        <HeaderAction onPress={handleOpenDrawer} iconName="menu" />
+    )
+
+    const renderHeaderRight = () => (
+        <HeaderAction onPress={handleProfileNavigate} iconName="person" />
+    )
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <Drawer
-                screenOptions={({ navigation }) => ({
+                screenOptions={{
                     drawerType: 'front',
-                    drawerActiveTintColor: tintColor,
-                    headerLeft: HeaderAction({ navigation, contrastColor, tintColor, action: "openDrawer" }),
-                    headerRightContainerStyle: { paddingHorizontal: 10, marginBottom: 5 },
-                    headerLeftContainerStyle: { paddingHorizontal: 10, marginBottom: 5 },
-                    headerRight: HeaderAction({ navigation, contrastColor, tintColor, action: "goBack" }),
-                })}>
+                    drawerActiveTintColor: theme.colors.tint,
+                    headerRightContainerStyle: styles.headerContainer,
+                    headerLeftContainerStyle: styles.headerContainer,
+                    headerLeft: renderHeaderLeft,
+                    headerRight: renderHeaderRight,
+                }}>
                 <Drawer.Screen
                     name="index"
                     options={{
@@ -41,6 +59,13 @@ export default function HostLayout() {
                     options={{
                         title: 'Mi perfil',
                         drawerIcon: TabBarIcon("person", "person-outline")
+                    }}
+                />
+                <Drawer.Screen
+                    name="configuration"
+                    options={{
+                        title: 'Configuración',
+                        drawerIcon: TabBarIcon("settings", "settings-outline")
                     }}
                 />
             </Drawer>

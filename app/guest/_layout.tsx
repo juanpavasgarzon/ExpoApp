@@ -1,15 +1,14 @@
 import { TabBarIcon } from "@/components/TabBarIcon";
-import { Colors } from "@/constants/Colors";
 import { Tabs } from "expo-router";
-import { useColorScheme } from "react-native";
+import { useTheme } from "@/hooks/useTheme";
 
 export default function GuestLayout() {
-    const colorScheme = useColorScheme();
+    const theme = useTheme();
 
     return (
         <Tabs
             screenOptions={{
-                tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+                tabBarActiveTintColor: theme.colors.tint,
                 headerShown: false,
             }}
         >

@@ -1,6 +1,6 @@
 import { router, usePathname } from "expo-router";
 import { createContext, PropsWithChildren, useEffect, useMemo, useState } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 
 interface SessionState {
     user: Record<string, string> | null;
@@ -22,17 +22,18 @@ export const SessionContext = createContext<SessionContextValues>({
     signIn: async () => { },
     signOut: async () => { },
     signUp: async () => { },
-    user: null,
-    isAuthenticated: false,
+    ...defaultSessionState
 })
 
 export const SessionProvider = ({ children }: PropsWithChildren) => {
     const [sessionState, setSessionState] = useState<SessionState>(defaultSessionState)
+
+    const asyncStorage = useAsyncStorage("@session");
     const pathName = usePathname();
 
     useEffect(() => {
         const init = async () => {
-            const sessionStored = await AsyncStorage.getItem("@session");
+            const sessionStored = await asyncStorage.getItem();
             const session = sessionStored ? JSON.parse(sessionStored) as SessionState : null;
 
             const {
@@ -59,7 +60,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
         setSessionState(sessionStore);
 
         const session = JSON.stringify(sessionStore);
-        await AsyncStorage.setItem("@session", session)
+        await asyncStorage.setItem(session)
 
         router.replace('/host');
     }
@@ -75,7 +76,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
         });
 
         const session = JSON.stringify(defaultSessionState);
-        await AsyncStorage.setItem("@session", session)
+        await asyncStorage.setItem(session)
         router.replace('/guest');
     }
 

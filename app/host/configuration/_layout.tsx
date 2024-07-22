@@ -2,7 +2,7 @@ import { TabBarIcon } from "@/components/TabBarIcon";
 import { Tabs } from "expo-router";
 import { useTheme } from "@/hooks/useTheme";
 
-export default function ProfileLayout() {
+export default function ConfigurationLayout() {
     const theme = useTheme();
 
     return (
@@ -20,24 +20,10 @@ export default function ProfileLayout() {
                 }}
             />
             <Tabs.Screen
-                name="password"
+                name="appearance"
                 options={{
-                    title: 'Cambiar contraseña',
-                    tabBarIcon: TabBarIcon("key", 'key-outline')
-                }}
-            />
-            <Tabs.Screen
-                name="delete"
-                options={{
-                    title: 'Eliminar cuenta',
-                    tabBarIcon: TabBarIcon("trash", "trash-outline")
-                }}
-            />
-            <Tabs.Screen
-                name="close"
-                options={{
-                    title: 'Cerrar sesión',
-                    tabBarIcon: TabBarIcon("log-out", "log-out-outline"),
+                    title: 'Apariencia',
+                    tabBarIcon: TabBarIcon("color-palette", 'color-palette-outline')
                 }}
             />
         </Tabs>
